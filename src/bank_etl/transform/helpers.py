@@ -37,3 +37,7 @@ def map_values(s: pd.Series, mapping: dict[str, str], label: str = "") -> pd.Ser
     if unknown:
         raise ValueError(f"{label}: valores sin traducción definida: {unknown}")
     return clean.map(mapping)
+
+def clean_id_text(s: pd.Series) -> pd.Series:
+    """Identificador como texto; quita el '.0' final si el CSV lo trae."""
+    return blank_to_null(s).str.replace(r"\.0$", "", regex=True)
