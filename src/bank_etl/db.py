@@ -27,3 +27,8 @@ class DatabaseConnection:
             conn.execute(text("SELECT 1"))
         logger.info("Conexión a PostgreSQL OK")
         return True
+
+    def scalar(self, sql: str, params: dict | None = None):
+        """Ejecuta una consulta y devuelve la primera columna de la primera fila."""
+        with self._engine.begin() as conn:
+            return conn.execute(text(sql), params or {}).scalar()
