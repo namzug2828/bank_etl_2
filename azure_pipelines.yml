@@ -1,0 +1,29 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: "3.12"
+    displayName: "Usar Python 3.12"
+
+  - script: |
+      python -m pip install --upgrade pip
+      pip install -e ".[dev]"
+    displayName: "Instalar paquete y dependencias"
+
+  - script: python -m pytest -v --junitxml=test-results.xml
+    displayName: "Correr pytest"
+
+  - task: PublishTestResults@2
+    condition: succeededOrFailed()
+    inputs:
+      testResultsFormat: JUnit
+      testResultsFiles: test-results.xml
+      testRunTitle: "pytest"
+    displayName: "Publicar resultados"
